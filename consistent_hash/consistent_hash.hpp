@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include<sstream>
 #include <map>
 #include <set>
 using namespace std;
@@ -22,7 +23,7 @@ public:
     ConsistentHash(const int _virtualNOdeNum)
         : virtualNOdeNum(_virtualNOdeNum)
     {
-        physicalNodes.insert("192.168.1.101");
+        physicalNodes.insert("192.168.1.101");//给他初始化一些物理机器
         physicalNodes.insert("192.168.1.102");
         physicalNodes.insert("192.168.1.103");
         physicalNodes.insert("192.168.1.104");
@@ -57,7 +58,7 @@ public:
             {
                 // stringstream是C++的一个流对象，方便的读写字符串和数字等各个数据类型<<就是流输入，>>就是流输出
                 stringstream nodekey;
-                nodekey << ip << "#" << j;
+                nodekey << ip<< "#" << j;
                 uint32_t partition = FNVHash(nodekey.str());
                 serverNodes[partition] = ip; // 这里我们先绑定好
             }
@@ -69,10 +70,11 @@ public:
         for (int j = 0; j < virtualNOdeNum; j++)
         {
             stringstream nodekey;
-            nodekey << ip << "#" << j;
+            nodekey << nodeip << "#" << j;
             uint32_t partition = FNVHash(nodekey.str());
             serverNodes[partition] = nodeip; //这里把新的物理节点也要生成相应的虚拟节点，进行映射 
         }
+        physicalNodes.insert(nodeip);
     }
     //删除一个物理节点,同时他对应的虚拟节点也要删除
     void DeletePhysicalNode(const string nodeip)
@@ -80,7 +82,7 @@ public:
         for(int j=0;j<virtualNOdeNum;j++)
         {
             stringstream nodekey;
-            nodekey << ip << "#" << j;
+            nodekey << nodeip << "#" << j;
             uint32_t partition = FNVHash(nodekey.str());
             auto it=serverNodes.find(partition);//找到了对应的虚拟节点的hash值的key
             if(it!=serverNodes.end())
@@ -130,7 +132,8 @@ public:
         cout<<"----"<<label<<"-----"<<endl;
         for(auto &p:cnt)
         {
-            s
+            cout<<"nodeip:"<<p.first<<" rate: "<<100*p.second/(total*1.0)<<"%"<<endl;
         }
+
     }
 };
