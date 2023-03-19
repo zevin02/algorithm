@@ -130,7 +130,7 @@ public:
         cout<<"----"<<label<<"-----"<<endl;
         for(auto &p:cnt)
         {
-            
+            s
         }
     }
 };
